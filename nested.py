@@ -1,5 +1,6 @@
 import ast
-from typing import Any, List
+from typing import Any, List, Iterable, Iterator
+
 
 def flatten_nested_list(input_list: list) -> list:
     flat = []
@@ -24,6 +25,15 @@ def flatten_recursive(input_list: List[Any]) -> List[Any]:
     return flat
 
 
+def flatten_generative(input_list: Iterable[Any]) -> Iterator[Any]:
+    for sublist in input_list:
+        if isinstance(sublist, list):
+            # yield each item from the recursive generator
+            yield from flatten_generative(sublist)
+        else:
+            yield sublist
+
+
 def main():
 
     # Accepts the list items as string
@@ -35,9 +45,11 @@ def main():
     # Function call
     flatten_list = flatten_nested_list(nested_list)
     flatten_list_recursive = flatten_recursive(nested_list)
+    flatten_list_gen = list(flatten_generative(nested_list))
 
     print(f"Flatten list is {flatten_list}")
     print(f"Flatten list is {flatten_list_recursive}")
+    print(f"Flatten list is {flatten_list_gen}")
 
 if __name__ == '__main__':
     main()
