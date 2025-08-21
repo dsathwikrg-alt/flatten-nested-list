@@ -134,3 +134,26 @@ B returns (pop B)
 Resume A (still on stack), then return A (pop A)
 
 If you want, I can show you the same run with a tiny depth print helper so you can watch the enter/return flow exactly.
+
+
+from typing import Any, List
+
+def flatten_recursive(items: List[Any], depth: int = 0) -> List[Any]:
+    indent = "  " * depth
+    print(f"{indent}enter depth={depth}, items={items}")
+    flat: List[Any] = []
+    for element in items:
+        print(f"{indent}  element={element!r}")
+        if isinstance(element, list):
+            print(f"{indent}  -> recurse on {element}")
+            sub = flatten_recursive(element, depth + 1)
+            print(f"{indent}  <- got {sub} from depth {depth+1}")
+            flat.extend(sub)
+            print(f"{indent}  flat after extend: {flat}")
+        else:
+            flat.append(element)
+            print(f"{indent}  flat after append: {flat}")
+    print(f"{indent}return depth={depth}, {flat}\n")
+    return flat
+
+flatten_recursive([2, [3, 4]])
