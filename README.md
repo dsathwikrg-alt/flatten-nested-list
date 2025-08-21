@@ -78,3 +78,59 @@ If it’s not a list (e.g., int or str), you just append it directly.
 Use type() when you need an exact match (e.g., making sure something is precisely a list, not a subclass).
 
 Use isinstance() when you want to allow subclasses (most common in Python, especially in polymorphism).
+
+
+###################################################################################
+Flattening Using Recursion:
+
+Think of it like this:
+
+Call A starts: flatten_recursive([2, [3, 4]])
+
+flatA = []
+
+Processes 2 → flatA = [2]
+
+Hits [3, 4] → needs to flatten it → calls B
+
+Call B starts: flatten_recursive([3, 4])
+
+flatB = []
+
+Appends 3, 4 → flatB = [3, 4]
+
+Returns [3, 4] to whoever called it (i.e., back to A)
+
+Back to Call A (this is what you’re seeing as “control going back”)
+
+A wasn’t “done”; it was paused at the line:
+
+flat.extend(flatten_recursive(element))  # waiting for B’s result
+
+
+Now it continues: flatA.extend([3, 4]) → flatA = [2, 3, 4]
+
+A finishes and returns [2, 3, 4].
+
+So: A → (calls) B → (B returns) → A resumes → A returns.
+That’s normal stack behavior: the caller (A) always resumes exactly at the point where it called the callee (B), using the returned value.
+
+Why it looks confusing in a debugger
+
+When you “Step Into,” you enter B and see flat = [] there (that’s B’s local list).
+
+When B returns, the debugger takes you back to A at the extend(...) line, then you see A’s flat continue to grow.
+
+You’re not re-running A from the start; you’re resuming A from the call site.
+
+Tiny mental model (stack frames)
+
+Push A
+
+A pushes B
+
+B returns (pop B)
+
+Resume A (still on stack), then return A (pop A)
+
+If you want, I can show you the same run with a tiny depth print helper so you can watch the enter/return flow exactly.

@@ -1,4 +1,5 @@
 import ast
+from typing import Any, List
 
 def flatten_nested_list(input_list: list) -> list:
     flat = []
@@ -13,6 +14,16 @@ def flatten_nested_list(input_list: list) -> list:
 
     return flat
 
+def flatten_recursive(input_list: List[Any]) -> List[Any]:
+    flat: List[Any] = []
+    for sublist in input_list:
+        if isinstance(sublist, list):          # if it's a list, flatten it further
+            flat.extend(flatten_recursive(sublist))
+        else:                                  # otherwise, append the value
+            flat.append(sublist)
+    return flat
+
+
 def main():
 
     # Accepts the list items as string
@@ -23,8 +34,10 @@ def main():
 
     # Function call
     flatten_list = flatten_nested_list(nested_list)
+    flatten_list_recursive = flatten_recursive(nested_list)
 
     print(f"Flatten list is {flatten_list}")
+    print(f"Flatten list is {flatten_list_recursive}")
 
 if __name__ == '__main__':
     main()
